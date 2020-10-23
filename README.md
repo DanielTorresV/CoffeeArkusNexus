@@ -25,11 +25,11 @@ Desarrollar una aplicación móvil con el lenguaje de programación del perfil a
 
 Run the following comands:  
     Clone the project:  
-        git clone https://github.com/react-native-maps/react-native-maps.git  
+        `git clone https://github.com/react-native-maps/react-native-maps.git`  
     Change branch:  
-        git checkout android-dev  
+        `git checkout android-dev`  
     Install packages:  
-        npm install  
+        `npm install`  
     Run on android:  
-        react-native run-android  
+        `react-native run-android`  
 
