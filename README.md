@@ -24,14 +24,24 @@ Desarrollar una aplicación móvil con el lenguaje de programación del perfil a
 ### Installation
 
 Run the following comands:  
+  
     Clone the project:  
+      
         `git clone https://github.com/DanielTorresV/CoffeeArkusNexus.git`  
+          
     Change project folder:  
-        `cd CoffeeArkusNexus/`
+      
+        `cd CoffeeArkusNexus/`  
+          
     Change branch:  
+      
         `git checkout android-dev`  
+          
     Install packages:  
+      
         `npm install`  
+          
     Run on android:  
+      
         `react-native run-android`  
 
