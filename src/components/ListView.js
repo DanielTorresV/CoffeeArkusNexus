@@ -5,6 +5,8 @@ import { getDistance } from 'geolib';
 import GetLocation from 'react-native-get-location'
 import StarRating from 'react-native-star-rating';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
 export default class ListView extends Component {
     constructor(props) {
@@ -70,7 +72,7 @@ export default class ListView extends Component {
                     data={this.state.data}
                     renderItem={({item})=>(
                         <List style={styles.listBase}>
-                            <ListItem thumbnail button onPress={()=>console.log(item.PlaceId)}>
+                            <ListItem thumbnail button onPress={()=>this.props.navigation.navigate('Detail', {data: item})}>
                             <Left>
                                 <Thumbnail large square source={{ uri: item.Thumbnail }} />
                             </Left>
