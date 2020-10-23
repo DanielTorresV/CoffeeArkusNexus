@@ -1,12 +1,9 @@
 import React, { Component } from 'react'
 import { FlatList, StyleSheet, Image } from 'react-native';
-import { Container, Header, Left, Body, Right, Button, Title, Text, List, ListItem, Thumbnail, View, Item } from 'native-base';
+import { Container, Header, Left, List, ListItem, Item } from 'native-base';
 import { getDistance } from 'geolib';
 import GetLocation from 'react-native-get-location'
-import StarRating from 'react-native-star-rating';
-import Icon from 'react-native-vector-icons/FontAwesome5';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import Place from './Place.js';
 
 export default class ListView extends Component {
     constructor(props) {
@@ -73,47 +70,7 @@ export default class ListView extends Component {
                     renderItem={({item})=>(
                         <List style={styles.listBase}>
                             <ListItem thumbnail button onPress={()=>this.props.navigation.navigate('Detail', {data: item})}>
-                            <Left>
-                                <Thumbnail large square source={{ uri: item.Thumbnail }} />
-                            </Left>
-                            <Body>
-                                <Text>{item.PlaceName}</Text>
-                                <View style={styles.stars}>
-                                    <StarRating
-                                        disabled={true}
-                                        maxStars={5}
-                                        rating={item.Rating}
-                                        fullStarColor={'#ffcc00'}
-                                        emptyStarColor={'#ffeb99'}
-                                        starSize={20}
-                                    />
-                                </View>
-                                <Text large note>{item.AddressLine1}</Text>
-                                <Text large note>{item.AddressLine2}</Text>
-                            </Body>
-                            <Right style={{flexDirection:"column", alignItems:"flex-end"}}>
-                                {this.state.latitude ?
-                                    <Text style={styles.textDistance}>
-                                        {item.Distance ? item.Distance > 1000 ? 
-                                        (item.Distance/1000).toFixed(1) + " Km" :
-                                        item.Distance.toFixed(1) + " m" : null }
-                                    </Text>
-                                :
-                                    <Text></Text>
-                                }
-                                {item.IsPetFriendly ? 
-                                    <>
-                                        <Button transparent>
-                                            <Icon name="dog" size={40} color={'#70dbdb'}/>
-                                        </Button>
-                                        <Text style={styles.textPet}>
-                                            Pet Friendly
-                                        </Text>
-                                    </>
-                                    :
-                                    null
-                                }
-                            </Right>
+                                <Place data={item}/>
                             </ListItem>
                         </List>
                     )}
@@ -136,17 +93,6 @@ const styles = StyleSheet.create({
     },
     listBase:{
         flex:1,
-    },
-    textDistance: {
-        fontSize: 10,
-        marginTop: -10
-    },
-    textPet: {
-        fontSize: 10,
-    },
-    stars:{
-        width:40,
-        marginBottom:10
     },
     imgHeader:{
         resizeMode: "contain",
