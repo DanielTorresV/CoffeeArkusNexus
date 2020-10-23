@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { FlatList, StyleSheet } from 'react-native';
-import { Container, Header, Left, Body, Right, Button, Title, Text, List, ListItem, Thumbnail, View, Item, Image } from 'native-base';
+import { FlatList, StyleSheet, Image } from 'react-native';
+import { Container, Header, Left, Body, Right, Button, Title, Text, List, ListItem, Thumbnail, View, Item } from 'native-base';
 import { getDistance } from 'geolib';
 import GetLocation from 'react-native-get-location'
 import StarRating from 'react-native-star-rating';
@@ -17,13 +17,12 @@ export default class ListView extends Component {
       }
 
     componentDidMount(){
-        this.getLocations()
         GetLocation.getCurrentPosition({
             enableHighAccuracy: true,
             timeout: 15000,
         })
         .then(location => {
-            this.setState({latitude:location.latitude, longitude:location.longitude})
+            this.setState({latitude:location.latitude, longitude:location.longitude},()=>this.getLocations())
         })
         .catch(error => {
             const { code, message } = error;
@@ -31,11 +30,27 @@ export default class ListView extends Component {
         })
     }
 
+    getDistanceLocation(){
+        let result = [...this.state.data]
+        result.forEach((item) =>{
+            let distance = getDistance(
+                { latitude: item.Latitude, longitude: item.Longitude },
+                { latitude: this.state.latitude, longitude: this.state.longitude }
+            )
+            item["Distance"] = distance
+        })
+        result.sort(function(a, b) {
+            return a.Distance - b.Distance;
+        });
+        this.setState({data:result})
+        
+    }
+
     getLocations(){
         fetch('http://www.mocky.io/v2/5bf3ce193100008900619966')
         .then((response) => response.json())
         .then((json) => {
-            this.setState({ data: json });
+            this.setState({ data: json },()=>this.getDistanceLocation());
         })
         .catch((error) => console.error(error))
     }
@@ -46,10 +61,10 @@ export default class ListView extends Component {
                 <Header androidStatusBarColor="#BBBBBB" style={styles.headerBase}>
                     <Left>
                     </Left>
-                    <Body>
-                        {/* <Image style={styles.imgHeader} source={{uri: '../img/arkus-logo.png'}}/> */}
-                        <Title style={styles.titleBase}>Arkus Nexus</Title>
-                    </Body>
+                    <Item>
+                        <Image style={styles.imgHeader} source={require('../img/arkus-logo.png')}/>
+                        {/* <Title style={styles.titleBase}>Arkus Nexus</Title> */}
+                    </Item>
                 </Header>
                 <FlatList
                     data={this.state.data}
@@ -71,23 +86,15 @@ export default class ListView extends Component {
                                         starSize={20}
                                     />
                                 </View>
-                                <Text large note numberOfLines={2}>{item.Address}</Text>
+                                <Text large note>{item.AddressLine1}</Text>
+                                <Text large note>{item.AddressLine2}</Text>
                             </Body>
                             <Right style={{flexDirection:"column", alignItems:"flex-end"}}>
                                 {this.state.latitude ?
                                     <Text style={styles.textDistance}>
-                                        {getDistance(
-                                            { latitude: item.Latitude, longitude: item.Longitude },
-                                            { latitude: this.state.latitude, longitude: this.state.longitude }
-                                        ) > 1000 ? 
-                                        (getDistance(
-                                            { latitude: item.Latitude, longitude: item.Longitude },
-                                            { latitude: this.state.latitude, longitude: this.state.longitude }
-                                        )/1000).toFixed(1) + " Km" :
-                                        getDistance(
-                                            { latitude: item.Latitude, longitude: item.Longitude },
-                                            { latitude: this.state.latitude, longitude: this.state.longitude }
-                                        ).toFixed(1) + " m" }
+                                        {item.Distance ? item.Distance > 1000 ? 
+                                        (item.Distance/1000).toFixed(1) + " Km" :
+                                        item.Distance.toFixed(1) + " m" : null }
                                     </Text>
                                 :
                                     <Text></Text>
@@ -95,7 +102,7 @@ export default class ListView extends Component {
                                 {item.IsPetFriendly ? 
                                     <>
                                         <Button transparent>
-                                            <Icon name="dog" size={35} color={'#b3e0ff'}/>
+                                            <Icon name="dog" size={40} color={'#b3e0ff'}/>
                                         </Button>
                                         <Text style={styles.textPet}>
                                             Pet Friendly
@@ -136,9 +143,11 @@ const styles = StyleSheet.create({
         fontSize: 10,
     },
     stars:{
-        width:40
+        width:40,
+        marginBottom:10
     },
     imgHeader:{
         resizeMode: "contain",
+        height:30
     },
   });
