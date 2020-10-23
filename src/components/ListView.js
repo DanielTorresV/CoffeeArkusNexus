@@ -104,7 +104,7 @@ export default class ListView extends Component {
                                 {item.IsPetFriendly ? 
                                     <>
                                         <Button transparent>
-                                            <Icon name="dog" size={40} color={'#b3e0ff'}/>
+                                            <Icon name="dog" size={40} color={'#70dbdb'}/>
                                         </Button>
                                         <Text style={styles.textPet}>
                                             Pet Friendly

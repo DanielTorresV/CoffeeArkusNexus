@@ -3,6 +3,7 @@ import { FlatList, StyleSheet, Image, Linking } from 'react-native';
 import { Container, Header, Left, Body, Right, Button, Title, Text, List, ListItem, Thumbnail, View, Item } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import StarRating from 'react-native-star-rating';
+import MapView, {Marker} from 'react-native-maps';
 
 export default class detailView extends Component {
     constructor(props) {
@@ -14,6 +15,15 @@ export default class detailView extends Component {
 
     componentDidMount(){
         this.setState({data: this.props.route.params.data})
+    }
+
+    getTimeDistance(distance){
+        let result = distance/90000
+        if (result <= 1) {
+            return result.toFixed(1)*60 == 60 ? `1 hr drive` : `${result.toFixed(1)*60} min drive`
+        } else {
+            return `${result.toFixed(1)} hr drive`
+        }
     }
 
     render() {
@@ -29,6 +39,29 @@ export default class detailView extends Component {
                         <Title style={styles.textTitle}>Details</Title>
                     </Body>
                 </Header>
+                {
+                    this.state.data.Latitude ?
+                        <MapView
+                            style={styles.maps}
+                            initialRegion={{
+                            latitude: this.state.data.Latitude,
+                            longitude: this.state.data.Longitude,
+                            latitudeDelta:0.0050,
+                            longitudeDelta:0.0045
+                            }}
+                            showsUserLocation={true}
+                        >
+                            <Marker
+                                coordinate={{
+                                    latitude: this.state.data.Latitude,
+                                    longitude: this.state.data.Longitude,
+                                }}
+                                description={this.state.data.PlaceName}
+                            />
+                        </MapView>
+                    :
+                        null
+                }
                 <View style={styles.informationContent}>
                     <View style={styles.information}>
                         <Text style={styles.placeName}>{this.state.data.PlaceName}</Text>
@@ -66,7 +99,7 @@ export default class detailView extends Component {
                         </Button>
                         <View style={styles.accessDesc}>
                             <Text style={styles.accessTitle}>Directions</Text>
-                            <Text style={styles.accessSub}>15 min drive</Text>
+                            <Text style={styles.accessSub}>{this.getTimeDistance(this.state.data.Distance)}</Text>
                         </View>
                         <Button transparent style={styles.goArrow} onPress={()=> Linking.openURL(`geo:${this.state.data.Latitude},${this.state.data.Longitude}`)}>
                             <Icon name="angle-right" size={40} color={'#808080'}/>
@@ -106,6 +139,10 @@ const styles = StyleSheet.create({
     headerBase: {
         backgroundColor:'#FDFDFD'
       },
+    maps:{
+        width:'100%', 
+        height:220
+    },
     textTitle:{
         color:'#151515',
     },

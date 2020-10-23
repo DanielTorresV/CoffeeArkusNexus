@@ -12,6 +12,8 @@ target 'Coffee' do
 
   pod 'ReactNativeGetLocation', :path => '../node_modules/react-native-get-location'
 
+  pod 'react-native-maps', :path => '../node_modules/react-native-maps'
+
   target 'CoffeeTests' do
     inherit! :complete
     # Pods for testing
