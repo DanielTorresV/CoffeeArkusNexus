@@ -8,6 +8,10 @@ target 'Coffee' do
 
   use_react_native!(:path => config["reactNativePath"])
 
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
+  pod 'ReactNativeGetLocation', :path => '../node_modules/react-native-get-location'
+
   target 'CoffeeTests' do
     inherit! :complete
     # Pods for testing
